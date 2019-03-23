@@ -1,0 +1,40 @@
+replicaCount: 3
+
+image:
+  repository: ncrnolo/deliveryknapsack
+  tag: sha256:7f51361ad5a983eeafbfd9954d4ac36f80de09b487a333c404ec3ef3d544e294
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  connectionString: "nothing"
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: "letsencrypt-prod"
+    certmanager.k8s.io/acme-challenge-type: http01
+  path: /
+  hosts:
+    - contest.ncrlab.cz
+  tls:
+    - secretName: delivery-knapsack-tls
+      hosts:
+      - contest.ncrlab.cz
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

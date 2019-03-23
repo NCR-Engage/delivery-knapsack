@@ -1,0 +1,195 @@
+﻿@model Ncr.DeliveryKnapsack.Models.IndexViewModel
+
+@{
+    ViewData["Title"] = "NCR / Delivery Knapsack competition";
+}
+
+<div class="row">
+    @if (Model.Kiosk)
+    {
+        <div class="col-md-2"></div>
+    }
+
+    @if (!Model.Kiosk)
+    {
+        <div class="col-md-6">
+            <h2>Story</h2>
+
+            <p>
+                Poor deliveryman! He has been given an enormous list of items to deliver and a slightly
+                less enormous backpack. How should he decide what items to take to his journey so that
+                the amount of customers he disappoints is as low as possible?
+            </p>
+
+            <h2>Rules</h2>
+
+            <p>
+                Your input consists of maximum weight of stuff backpack can support and set of triplets:
+                item ID, item weight and item price. Based on this input, you are expected to provide
+                the deliveryman with a <b>set</b> of items he should deliver. Your output should maximize
+                total price of items that made it into the backpack and keep the total weight of items
+                under the backpack capacity.
+            </p>
+
+            <p>See <a href="@Url.Action("List", "Home")">the input file</a>. It looks like this:</p>
+
+            <pre>
+726643700
+258434;564721.403;564707.973
+258439;1993670.754;1993667.614
+258449;1280188.937;1280186.417
+[...]
+</pre>
+
+            <p>Each line of your solution should contain an order ID from the input file. The order is not important.</p>
+
+            <pre>
+258434
+258460
+258524
+[...]
+</pre>
+
+            <p>This is an open data (i.e., <a href="https://projecteuler.net/">Project Euler</a>-like) challenge. You have been given the input dataset, you are expected to return a text file with a solution, not a code you used.</p>
+
+            <p>The deadline is Monday 25th March 2019, at 16:00, <a href="https://en.wikipedia.org/wiki/Central_European_Time">CET</a>. Good luck!</p>
+
+            <h3>Nuances of the rules</h3>
+
+            <ul>
+                <li>Your solution has to fit into backpack even to be considered. Between all accepted solutions, we will pick primarily based on the sum of prices of items (the bigger, the better), secondarily based on submission time (the sooner, the better).</li>
+                <li>You have to be a student of ČVUT to be eligible for the prize.</li>
+                <li>The leaderboard we provide online does not provide final verdict in a case there is a blatant mistake at the site that would allow "solutions" that are against the spirit of the task. If you submit a solution, we will send you final results after the deadline.</li>
+            </ul>
+        </div>
+    }
+
+    <div class="col-md-@(Model.Kiosk ? "8" : "6")">
+        <div style="height: 200px; line-height: 200px; width: 100%; background-color: rgb(84, 185, 72); color: white; font-size: xx-large; text-transform: uppercase; text-align: center">
+            @if (Model.Kiosk)
+            {
+                <span>NCR</span>
+            }
+            else
+            {
+                <span>Delivery knapsack</span>
+            }
+        </div>
+
+        @if (Model.Kiosk)
+        {
+            <h2>Registration</h2>
+        }
+        else
+        {
+            <h2>Submit a solution</h2>
+        }
+
+    <form method="post" enctype="multipart/form-data" action="@(Model.Kiosk ? "/?kiosk=true" : "/")">
+        <div class="form-group">
+            <label for="nameLabel">Name</label>
+            <input type="text" name="Name" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="nameLabel">E-mail</label>
+            <input type="email" name="EMail" class="form-control" />
+        </div>
+
+        @if (Model.Kiosk)
+        {
+            <div class="form-group">
+                <label for="nameLabel">Phone</label>
+                <input type="text" name="Phone" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="OpenDoor" id="openDoor" value="true">
+                    <label class="form-check-label" for="openDoor">I would like to attend Doors Open Day in NCR office on Wednesday 27th March 2019</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="Knapsack" id="knapsack" value="true">
+                    <label class="form-check-label" for="knapsack">I would like to participate in Delivery Knapsack coding competition</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="Hackathon" id="hackathon" value="true">
+                    <label class="form-check-label" for="hackathon">I would like to get invitation for NCR Hackathon which will take place in May 2019</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="nameLabel">I am interested in:</label>
+                <div class="checkbox-inline" style="padding-left: 2em">
+                    <input class="form-check-input" type="checkbox" name="Intern" id="intern" value="true">
+                    <label class="form-check-label" for="intern">Internship</label>
+                </div>
+                <div class="checkbox-inline" style="padding-left: 2em">
+                    <input class="form-check-input" type="checkbox" name="Part" id="part" value="true">
+                    <label class="form-check-label" for="part">Part-time</label>
+                </div>
+                <div class="checkbox-inline" style="padding-left: 2em">
+                    <input class="form-check-input" type="checkbox" name="Full" id="full" value="true">
+                    <label class="form-check-label" for="full">Full-time</label>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Kiosk)
+        {
+            @if (Model.ProblemWithSolution)
+            {
+                <p>We had problems with parsing of your solution. Please check the format of the file you submitted.</p>
+            }
+            else if (Model.TotalCost.HasValue)
+            {
+                <p>Your solution has been evaluated and recorded. The sum is @Model.TotalCost.Value , right?</p>
+
+                <p>We are looking forward to the Open Doors day!</p>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label for="nameLabel">Solution</label>
+                    <input type="file" name="Solution" class="form-control-file" />
+                    <small id="emailHelp" class="form-text text-muted">Feel free to resubmit if you come up with a better solution in the future.</small>
+                </div>
+            }
+        }
+
+        <div class="form-group">
+            <p><small id="emailHelp" class="form-text text-muted">We will use your data only for the purpose of contest, hackathon and Open Doors organization. We won't retain your data after the contest is over.</small></p>
+            <button type="submit" class="btn btn-primary" style="background-color: rgb(84, 185, 72); border-color: rgb(84, 185, 72)">
+                @if (Model.Kiosk)
+                {<b>Register</b> }
+                else
+                { <b>Submit solution</b>}
+            </button>
+        </div>
+    </form>
+
+        @if (!Model.Kiosk)
+        {
+            <h2>Leaderboard</h2>
+
+            <table class="table table-striped">
+                <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                </tr>
+                <tr>
+                    <td>1.</td>
+                    <td>kopecka</td>
+                </tr>
+                <tr>
+                    <td>2.</td>
+                    <td>Lazy Contestant</td>
+                </tr>
+                <tr>
+                    <td>3.</td>
+                    <td>Input</td>
+                </tr>
+            </table>
+        }
+    </div>
+</div>
